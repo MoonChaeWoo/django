@@ -9,7 +9,8 @@
 <body>
     <h1>Blog</h1>
 
-    {% for p in posts %}
+    <!-- 기존의 for p in posts 에서 CBV 방식으로 바꾸면서 ListView를 상속받아 자동으로 post_list 또는 object_list로 작성하면 된다. -->
+    {% for p in post_list %}
         <h2><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></h2>
         <h4>{{ p.created_at }}</h4>
         <p>{{ p.content }}</p>
