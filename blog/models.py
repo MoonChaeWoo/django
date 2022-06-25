@@ -15,3 +15,6 @@ class Post(models.Model):
 # self.pk는 유일키 self.title은 제목을 보여준다.
     def __str__(self):
         return f'[{self.pk}번 {self.title}]'
+# get_absolute_url을 정의하고 html에서 a href="{{ p.get_absolute_url }}"게 설정하여 url을 사용할 수 있다.
+    def get_absolute_url(self):
+        return f'/blog/{self.pk}'
