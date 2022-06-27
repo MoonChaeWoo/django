@@ -6,6 +6,8 @@ class Post(models.Model):
     title = models.CharField(max_length=30)
     content = models.TextField()
 
+# 업로드한 이미지를 년, 월, 일 별로 폴더를 나누어서 저장이 되도록 하는게 한곳에 모아서 저장하는거 보다 훨씬 성능개선에 좋다.
+    head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True)
 # 업데이트 시간에 대한 필드 선언과 인자값으로 auto_now=True를 넣어준다.
 # 다시 저장할때 마다 그 시각이 저장되도록 한다.
     created_at = models.DateTimeField(auto_now=True)
