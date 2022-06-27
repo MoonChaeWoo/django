@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Blog Home - Start Bootstrap Template</title>
+        <title>Blog Home - Start Django</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />
         <!-- Core theme CSS (includes Bootstrap)-->
@@ -64,7 +64,7 @@
                                     <div class="small text-muted">{{ post.created_at }}</div>
                                     <h2 class="card-title h4">{{ post.title }}</h2>
                                     <p class="card-text">{{ post.content }}</p>
-                                    <a class="btn btn-primary" href="#!">Read more →</a>
+                                    <a class="btn btn-primary" href="{{ post.get_absolute_url }}">Read more →</a>
                                 </div>
                             </div>    
                         </div>
