@@ -6,17 +6,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Blog Post - Start Django</title>
+        <title>Blog Post - Start Linux</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <!-- fontawesome.com/kits -->
+        <script src="https://kit.fontawesome.com/e7c1072cee.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="#!">Start Django</a>
+                <a class="navbar-brand" href="#!">Start Linux</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -37,6 +39,7 @@
                         <!-- Post header-->
                         <header class="mb-4">
                             <!-- Post title-->
+                            <!-- DetailView를 상속받아 html로 뿌리면 DB이름 그대로(단 소문자) 작성해서 값을 빼오면 된다. -->
                             <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
                             <!-- Post meta content-->
                             <div class="text-muted fst-italic mb-2">{{ post.created_at }} by Start Django</div>
@@ -60,6 +63,24 @@
                             <h2 class="fw-bolder mb-4 mt-5">I have odd cosmic thoughts every day</h2>
                             <p class="fs-5 mb-4">For me, the most fascinating interface is Twitter. I have odd cosmic thoughts every day and I realized I could hold them to myself or share them with people who might be interested.</p>
                             <p class="fs-5 mb-4">Venus has a runaway greenhouse effect. I kind of want to know what happened there because we're twirling knobs here on Earth without knowing the consequences of it. Mars once had running water. It's bone dry today. Something bad happened there as well.</p>
+
+                            {% if post.file_upload %}
+                            <a href="{{ post.file_upload.url }}" class="btn btn-outline-dark" role="button" download>
+                                Download:
+            
+                                {% if post.get_file_ext == 'csv' %}
+                                    <i class="fa-solid fa-file-csv"></i>
+                                {% elif post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %}
+                                    <i class="fas fa-file-excel"></i>
+                                {% elif post.get_file_ext == 'docx' or post.get_file_ext == 'doc' %}
+                                    <i class="fas fa-file-word"></i>
+                                {% else %}
+                                    <i class="far fa-file"></i>
+                                {% endif %}
+            
+                                {{ post.get_file_name }}
+                            </a>
+                        {% endif %}
                         </section>
                     </article>
                     <!-- Comments section-->
@@ -149,7 +170,7 @@
         </div>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
-            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2022</p></div>
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Chaewoo Moon 2022</p></div>
         </footer>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

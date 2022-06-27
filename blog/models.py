@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 # Create your models here.
 
@@ -23,6 +24,15 @@ class Post(models.Model):
 # self.pk는 유일키 self.title은 제목을 보여준다.
     def __str__(self):
         return f'[{self.pk}번 {self.title}]'
+
 # get_absolute_url을 정의하고 html에서 a href="{{ p.get_absolute_url }}"게 설정하여 url을 사용할 수 있다.
     def get_absolute_url(self):
         return f'/blog/{self.pk}'
+
+# 파일의 경로를 제외하고 파일명을 나오게 하는 기능 (파이썬 os모듈을 이용한다.)
+    def get_file_name(self):
+        return os.path.basename(self.file_upload.name)
+
+# 파일의 확장자가 나오도록 하는 기능
+    def get_file_ext(self):
+        return self.get_file_name().split('.')[-1]
