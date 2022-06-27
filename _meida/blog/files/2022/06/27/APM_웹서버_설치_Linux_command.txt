@@ -1,0 +1,22 @@
+APM  개요
+- 리눅스는 가장 많이 활용하는 분야 중에 하나가 바로 웹(Web) 서버이다.
+- 가장 안정적이고 유명한 Apache 웹 서버 이다.
+- APM = Apache 웹 서버 + 프로그래밍 언어 PHP + 데이터베이스 MariaDB(이전 MySQL)
+- 리눅스 환경에서 사용될 경우에 LAPM(Linux, Apache, PHP, MairaDB)이라고도 부름
+- APM이라는 소프트웨어는 존재하지 않으며 이 3가지가 서로 잘 연동되어 운영되도록 많는 환경을 
+  APM이라고 부르는 것이다.
+
+실습 
+- 간단하게 apt 명령으로 웹 서버를 설치
+- apach2, php7.4, mysql-server8.0을 설치한다.
+	1. APM을 설치한다 sudo apt -y install lamp-server^ 을 입력하면 된다.
+	   - lamp-server^을 설치하면 APM에 관련된 건 한번에 설치가 된다.
+	2. systemctl restart apache2 를 함으로서 아파치 서버를 실행한다.
+	3. systemctl enable apache2 를 서비스 등록을 한다.
+	4. systemctl restart mysql(또는 시스템에 따라 mariadb가 설치 되곤한다.) db파일을 실행한다.
+	5. systemctl enable mysql 명령어로 db서버를 등록을 한다.
+	6. 제대로 작동하는지 확인하기 위해서 firefox에서 주소창에 localhost를 입력한다.
+	** /var/www/html이 웹서버의 홈 폴더이다.
+	7. /var/www/html로 이동을 한 후 geidt phpinfo.php(php정보를 보여주는 파일)을 생성한다.
+	8. 방화벽을 ufw allow 80으로 허가를 해준다.
+	9. localhost/phpinfo.php를 url에 입력하면 php에 대한 정보가 나온다.
