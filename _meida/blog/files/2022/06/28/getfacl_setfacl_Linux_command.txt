@@ -1,0 +1,61 @@
+getfacl [option] [file or directory]
+
+- 파일의 ACL(access control list)을 확인하는 명령어이다.
+- getfacl은 파일의 이름, 소유자, 그룹과 ACL 정보를 함께 출력한다.
+- ACL을 지원하지 않는 파일시스템에서 getfacl 명령어를 사용하면 ACL 대신 허가권을 출력한다.
+
+옵션
+- a
+ = 파일의 ACL을 출력한다.
+
+-d
+ = 기본 ACL을 출력한다.
+
+-R
+ = 모든 파일과 디렉터리를 재귀적으로 탐색하여 ACL정보를 출력한다.
+
+-p
+ = 절대 경로를 입력한다.
+
+setfacl [option] [file or directory]
+
+옵션
+- m
+ = 파일이나 디렉터리의 ACL을 추가하거나 변경한다.
+
+- x
+ = 파일이나 디렉터리의 ACL을 제거한다
+
+-R
+ = 디렉터리 하위의 모든 파일이나 디렉터리에 대해 재귀적으로 ACL을 설정한다.
+
+-b
+ = 모든 확장 ACL 엔트리를 제거한다.
+
+- 파일이나 디렉터리에 ACL을 설정하는 명령어이다.
+- 리눅스의 기본 허가권은 파일에 대한 소유자, 그룹, 다른 사용자의 허가권만 지정할 수 있다.
+- 특정 사용자마다 허가권을 세밀할게 부여할 수 없다. ACL은 이러한 제약을 극복하고 각 파일이나
+  디렉터리의 접근에 대한 세밀한 권한을 부여하는 보안 통제 방식이다.
+- ACL은 access ACL과 기본 ACL 두 가지가 있다. 
+    - access ACL은 지정한 파일이나 디렉터리에 설정한 임의의 ACL을 뜻한다.
+    - 기본 ACL은 필수는 아니지만 디렉터리에 설정할 수 있다.
+    - 기본 ACL이 설정된 디렉터리에 access ACL이 지정되지 않은 파일이 생성된다면 해당 파일은
+      디렉터리의 기본 ACL을 사용하게 될 것이다.
+
+ex)
+시용법 ) acl 설정(a,b 사용자)
+
+ # setfacl -m u:a:rx /gogle/admin
+
+ # setfacl -m u:b:rwx /gogle/admin
+
+ # setfacl -m u:b:rx /gogle/sales
+
+사용법 ) acl 설정(c,d 사용자)
+
+ # setfacl -m u:c:rx /gogle/sales
+
+ # setfacl -m u:d:rwx /gogle/sales
+
+ # setfacl -m u:d:rx /gogle/sales
+

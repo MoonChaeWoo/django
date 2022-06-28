@@ -6,6 +6,8 @@ import os
 class Post(models.Model):
     title = models.CharField(max_length=30)
     content = models.TextField()
+# 요약문을 나타내는 필드를 생성 글자수는 최대 100자 nullable
+    hook_text = models.CharField(max_length=100, blank=True)
 
 # 이미지 업로드 (pip intall Pillow)
 # 업로드한 이미지를 년, 월, 일 별로 폴더를 나누어서 저장이 되도록 하는게 한곳에 모아서 저장하는거 보다 훨씬 성능개선에 좋다.
