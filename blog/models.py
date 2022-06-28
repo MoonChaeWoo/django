@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import os
 
 # Create your models here.
@@ -22,10 +23,13 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+# django에서 기본적으로 제공하는 모델인 User 모델을 사용하여 저자 필드를 생성한다.
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
 # __str__은 관리자 페이지에서 제목과 유일키를 보여주는 기능을 함
 # self.pk는 유일키 self.title은 제목을 보여준다.
     def __str__(self):
-        return f'[{self.pk}번 {self.title}]'
+        return f'[{self.pk}번 {self.title}] by {self.author}'
 
 # get_absolute_url을 정의하고 html에서 a href="{{ p.get_absolute_url }}"게 설정하여 url을 사용할 수 있다.
     def get_absolute_url(self):
