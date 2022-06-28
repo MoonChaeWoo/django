@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ko">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{% block head_title%}Blog{% endblock %}</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        {% block styele %}
+        {% endblock %}
+    </head>
+    <body>
+        {% include 'blog/base_html/navbar.html' %}
+        {% block main_area %}
+        {% endblock %}
+        {% include 'blog/base_html/side.html' %}
+        {% include 'blog/base_html/footer.html' %}
+    </body>
+</html>
