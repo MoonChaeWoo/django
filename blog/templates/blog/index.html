@@ -59,6 +59,11 @@
                                     <!-- truncatewords:[원하는 문자열 갯수], truncatechars:[원하는 글자 수] -->
                                     <p class="card-text">{{ post.content | truncatewords:20 }}</p>
                                     <a class="btn btn-primary" href="{{ post.get_absolute_url }}">Read more →</a>
+                                    <div class="card-footer text-muted">
+                                        Posted on {{ post.created_at }} by
+                                        <!-- | 를 사용하면 앞에 있는 값에 UI?에 적용을 시켜주는 역할을 한다. -->
+                                        <a href="#">{{ post.author | upper }}</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

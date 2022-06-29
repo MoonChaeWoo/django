@@ -16,6 +16,10 @@
                         <!-- Post title-->
                         <!-- DetailView를 상속받아 html로 뿌리면 DB이름 그대로(단 소문자) 작성해서 값을 빼오면 된다. -->
                         <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
+                        <p class="lead">
+                            by
+                            <a href="#">{{ post.author | upper }}</a>
+                        </p>
                         <!-- Post meta content-->
                         <div class="text-muted fst-italic mb-2">{{ post.created_at }}
                             by Start Django</div>
