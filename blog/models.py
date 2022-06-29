@@ -24,7 +24,11 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 # django에서 기본적으로 제공하는 모델인 User 모델을 사용하여 저자 필드를 생성한다.
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    #author = models.ForeignKey(User, on_delete=models.CASCADE) # CASECADE는 author과 관련된 데이터들을 연쇄적으로 삭제한다는 의미이다.
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL) # CASECADE를 SET_NULL로 수정하면 작성자가 데이터베이스에서 삭제되었을 때
+                                                                           # 작성자명을 빈 칸으로 둔다는 의미이다. 
+    #null=True는 default로 null일 수 없기 때문에 명시적으로 해주지 않으면 오류가 생긴다.
+
 
 # __str__은 관리자 페이지에서 제목과 유일키를 보여주는 기능을 함
 # self.pk는 유일키 self.title은 제목을 보여준다.
