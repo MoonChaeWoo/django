@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Post, Category, Tag
-from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView
 
 # Create your views here.
 
@@ -90,3 +91,24 @@ class PostDetail(DetailView):
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
+
+class PostCreate(LoginRequiredMixin, CreateView):
+    # PostCreate는 CreateView를 상속받고 있어서 form_valid()함수의 기능을 확장할 수 있다.
+    model = Post
+    # CreateView에서 필드명을 리스트로 작성해서 fields에 저장을 한다.
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
+
+    # author 필드를 자동으로 채우기 위해 CreateView에서 제공하는 form_valid()함수
+    # CreateView는 form_valid()를 기본적으로 탑재
+    def form_valid(self, form):
+        current_user = self.request.user
+        # self.request.user는 웹 사이트 방문자를 의미한다.
+
+        if current_user.is_authenticated:
+            # is_authenticated는 웹사이트에 방문자가 로그인한 상태인지 아닌지 알 수 있다.
+            form.instance.author = current_user
+            # current_user = 현재 접속한 방문자를 담는다.
+            return super(PostCreate, self).form_valid(form)
+        else:
+            # 방문자가 비로그인이라면 돌려보낸다. 
+            return redirect('/blog/')
