@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Post, Category, Tag
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView
 
 # Create your views here.
@@ -92,7 +92,7 @@ class PostDetail(DetailView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     # PostCreate는 CreateView를 상속받고 있어서 form_valid()함수의 기능을 확장할 수 있다.
     model = Post
     # CreateView에서 필드명을 리스트로 작성해서 fields에 저장을 한다.
@@ -104,7 +104,12 @@ class PostCreate(LoginRequiredMixin, CreateView):
         current_user = self.request.user
         # self.request.user는 웹 사이트 방문자를 의미한다.
 
-        if current_user.is_authenticated:
+    # UserPassesTestMixin를 추가한 후
+    # test_func()함수를 추가해 이 페이지에 접근 가능한 사용자를 최고관리자 또는 스태프로 제한한다.
+    def test_func(self):
+        return self.request.user.is_superuser or self.request.user.is_staff
+
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
             # is_authenticated는 웹사이트에 방문자가 로그인한 상태인지 아닌지 알 수 있다.
             form.instance.author = current_user
             # current_user = 현재 접속한 방문자를 담는다.
