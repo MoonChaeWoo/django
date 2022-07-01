@@ -1,7 +1,9 @@
 {% extends 'blog/base_html/base.html' %}
 {% block head_title%}Blog Home - Start Linux{% endblock %}
 {% block main_area %}
-    <h1>Blog {% if category %} <span class="badge badge-secondary">{{ category }}</span>{% endif %}</h1>
+    <h1>Blog {% if category %} <span class="badge badge-secondary">{{ category }}</span>{% endif %}
+        {% if tag %} <span class="badge badge-light"><i class="fas fa-tags"></i>{{ tag }} ({{ tag.post_set.count }})</span>{% endif %}
+    </h1>
     <!-- Page header with logo and tagline-->
     <header class="py-5 bg-light border-bottom mb-4">
         <div class="container">

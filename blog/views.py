@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post, Category
+from .models import Post, Category, Tag
 from django.views.generic import ListView, DetailView
 
 # Create your views here.
@@ -33,20 +33,33 @@ class PostList(ListView):
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
-    def category_page(request, slug):
-        if slug == 'no_category':
-            category = '미분류'
-            post_list = Post.objects.filter(category=None)
-        else:
-            category = Category.objects.get(slug=slug)
-            post_list = Post.objects.filter(category=category)
+def category_page(request, slug):
+    if slug == 'no_category':
+        category = '미분류'
+        post_list = Post.objects.filter(category=None)
+    else:
+        category = Category.objects.get(slug=slug)
+        post_list = Post.objects.filter(category=category)
 
-        return render(request, 'blog\index.html', {
-            'post_list' : post_list,
-            'categories' : Category.objects.all(),
-            'no_category_post_count' : Post.objects.filter(category=None).count(),
-            'category' : category,
-        })
+    return render(request, 'blog\index.html', {
+        'post_list' : post_list,
+        'categories' : Category.objects.all(),
+        'no_category_post_count' : Post.objects.filter(category=None).count(),
+        'category' : category,
+    })
+
+def tag_page(request, slug):
+    tag = Tag.objects.get(slug=slug)
+    # _set.all() 외래키로 된 필드는 _set으로 되어 있다.
+    # tag_set.all()을 하게되면 외래키로 연결된 테이블의 값을 출력하게 되어있다.
+    post_list = tag.post_set.all()
+
+    return render(request, 'blog/index.html', {
+        'post_list' : post_list,
+        'tag' : tag,
+        'categories' : Category.objects.all(),
+        'no_category_post_count' : Post.objects.filter(category=None).count()
+    })
 
 # FBV 방식 (read_list)
 # def index(request):

@@ -20,7 +20,8 @@ from . import views
 urlpatterns = [
     path('', views.PostList.as_view()), #CBV방식
     path('<int:pk>/', views.PostDetail.as_view()), #CBV방식
-    path('category/<str:slug>/', views.PostList.category_page),
+    path('category/<str:slug>/', views.category_page),
+    path('tag/<str:slug>/', views.tag_page),
     # path('', views.index), #FBV방식
     # path('<int:pk>/', views.single_popst_pages), #FBV방식
 ]
