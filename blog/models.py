@@ -2,6 +2,16 @@ from django.db import models
 from django.contrib.auth.models import User
 import os
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/blog/tag/{self.slug}'
+
 # Create your models here.
 # Category클래스를 제일 상단에 작성해야 Post에 ForeignKey(인자)로 들어갈 수 있다.
 class Category(models.Model):
@@ -49,6 +59,10 @@ class Post(models.Model):
     #null=True는 default로 null일 수 없기 때문에 명시적으로 해주지 않으면 오류가 생긴다.
 
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL)
+
+    # 연결된 태그가 삭제되면 해당 포스트의 tags필드는 알아서 빈칸으로 바뀐다.
+    # null=True는 기본적으로 default이기 때문에 작성해주면 경고메세지가 뜬다.
+    tag = models.ManyToManyField(Tag, blank=True)
 
 # __str__은 관리자 페이지에서 제목과 유일키를 보여주는 기능을 함
 # self.pk는 유일키 self.title은 제목을 보여준다.
