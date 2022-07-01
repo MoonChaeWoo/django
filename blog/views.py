@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Post
+from .models import Post, Category
 from django.views.generic import ListView, DetailView
 
 # Create your views here.
@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView
 # CBV 방식 (read_list)
 class PostList(ListView):
     model = Post
-    # ListView는 모델명 뒤에 _list.html파일을 기본 템플릿으로 사용하도록 설정되어있다.
+    # ListView는 DB모델명 뒤에 _list.html파일을 기본 템플릿으로 사용하도록 설정되어있다.
     # 즉 Post모델에서 ListView모델을 상속받으면 post_list.html이 필요하다.
 
     # 첫번째 방법 template_name에서 직접 html을 지정할 수 있다.
@@ -19,6 +19,34 @@ class PostList(ListView):
     # -pk를 함으로써 최신 글부터 나올 수 있도록 설정
     ordering = '-pk'
 
+    # ListView나 DetailView와 같은 클래스는 기본적으로 get_context_data메서드를 내장하고 있다.
+    # ListView를 상속받은 PostList에서 단지 model = Post라고 선언하면 get_context_data에서 자동으로 post_list = Post.objects.all()을 명령한다.
+    # 즉 html에서 {% for post in post_list %}를 사용할 수 있는 이유가 이거에 있다는 것이다.
+    def get_context_data(self, **kwargs):
+        # get_context_data에서 기존에 제공했던 기능을 그대로 가져와 context에 저장한다.
+        # 다음 원하는 쿼리셋을 만들어 딕셔너리 형태로 context에 담으면 된다.
+        context = super(PostList, self).get_context_data()
+        # Category.objects.all()을 가져와 categories라는 이름의 키에 담는다. 
+        # 즉 html에서 {% for category in categories %} 이처럼 사용할 수 있게된다는 의미이다.
+        context['categories'] = Category.objects.all()
+        # 카테고리가 정해지지 않은 값을 html에서 불러온다는 의미이다. 사용은 {{ no_category_post_count }} 이렇게 사용이 가능하다.
+        context['no_category_post_count'] = Post.objects.filter(category=None).count()
+        return context
+
+    def category_page(request, slug):
+        if slug == 'no_category':
+            category = '미분류'
+            post_list = Post.objects.filter(category=None)
+        else:
+            category = Category.objects.get(slug=slug)
+            post_list = Post.objects.filter(category=category)
+
+        return render(request, 'blog\index.html', {
+            'post_list' : post_list,
+            'categories' : Category.objects.all(),
+            'no_category_post_count' : Post.objects.filter(category=None).count(),
+            'category' : category,
+        })
 
 # FBV 방식 (read_list)
 # def index(request):
@@ -43,3 +71,9 @@ class PostDetail(DetailView):
 # def single_popst_pages(request, pk):
 #     post = Post.objects.get(pk=pk)
 #     return render(request, 'blog\single_post_page.html', {'post' : post})
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDetail, self).get_context_data()
+        context['categories'] = Category.objects.all()
+        context['no_category_post_count'] = Post.objects.filter(category=None).count()
+        return context

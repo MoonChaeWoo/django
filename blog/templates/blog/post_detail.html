@@ -24,15 +24,18 @@
                         <div class="text-muted fst-italic mb-2">{{ post.created_at }}
                             by Start Django</div>
                         <!-- Post categories-->
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
-                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
+                        {% if post.category %}
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ post.category }}</a>
+                        {% else %}
+                        <a class="badge bg-secondary text-decoration-none link-light" href="#!">미분류</a>
+                        {% endif %}
                     </header>
                     <!-- Preview image figure-->
                     {% if post.head_image %}
                         <a href="{{ post.get_absolute_url }}"><img
                             class="card-img-top"
                             src="{{ post.head_image.url }}"
-                            alt="{{ p }} Thumbnail image"/></a>
+                            alt="Thumbnail image"/></a>
                     {% else %}
                         <!-- https://picsum.photos/700/350을 src에 넣어줌으로 써 이미지가 없는 포스트에 임의의 사진을 보여준다. -->
                         <!-- https://picsum.photos/seed/UID/700/350을 src에 넣어줌으로 써 새로고침마다 사진이 바뀌는걸 방지 -->

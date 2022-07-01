@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # django_extensions은 pip install django_extensions와 pip install ipython을 설치하고 나서 추가를 해야한다.
+    # 이후 쉘에서 python manage.py shell_plus명령을 실행하면 models.py(OSM)에 명시된 DB들을 참조하여 쉘에서 확인 가능하다.
+    # 그 후 for i in Post.objects.all():
+    #    print(f'{i} :: category-{i.category}') 와 같이 파이썬 문법을 사용해서 조회를 하면 된다.
+    'django_extensions',
     'blog',
     'single_pages',
 ]
