@@ -14,13 +14,13 @@
                         <!-- Post title-->
                         <!-- DetailView를 상속받아 html로 뿌리면 DB이름 그대로(단 소문자) 작성해서 값을 빼오면 된다. -->
                         <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
-                        <p class="lead">
-                            by
-                            <a href="#">{{ post.author | upper }}</a>
-                        </p>
+                        {% if user.is_authenticated and user == post.author %}
+                            <a class="btn btn-info btn-sm float-right" href="/blog/update_post/{{post.pk}}" role="button"><i class="fas fa-pen"></i>&nbsp&nbsp;Edit Post</a>
+                        {% endif %}
                         <!-- Post meta content-->
-                        <div class="text-muted fst-italic mb-2">{{ post.created_at }}
-                            by Start Django</div>
+                        <div class="text-muted fst-italic mb-2">
+                            {{ post.created_at }} by <a href="#">{{ post.author | upper }}</a>
+                        </div>
                         <!-- Post categories-->
                         {% if post.category %}
                         <a class="badge bg-secondary text-decoration-none link-light" href="#!">{{ post.category }}</a>

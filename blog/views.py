@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from .models import Post, Category, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
@@ -94,6 +95,7 @@ class PostDetail(DetailView):
 
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     # PostCreate는 CreateView를 상속받고 있어서 form_valid()함수의 기능을 확장할 수 있다.
+    # CreateView, UpdateView를 상속받으면 _form.html을 사용하도록 기본 설정 되어있다.
     model = Post
     # CreateView에서 필드명을 리스트로 작성해서 fields에 저장을 한다.
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category']
@@ -104,7 +106,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         current_user = self.request.user
         # self.request.user는 웹 사이트 방문자를 의미한다.
 
-    # UserPassesTestMixin를 추가한 후
+    # UserPassesTestMixin(권한관련)를 추가한 후
     # test_func()함수를 추가해 이 페이지에 접근 가능한 사용자를 최고관리자 또는 스태프로 제한한다.
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
@@ -117,3 +119,22 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         else:
             # 방문자가 비로그인이라면 돌려보낸다. 
             return redirect('/blog/')
+
+class PostUpdate(LoginRequiredMixin, UpdateView):
+    # UpdateView, CreateView를 상속받으면 _form.html을 사용하도록 기본 설정 되어있다.
+    model = Post
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category', 'tags']
+
+    template_name = 'blog/post_update_form.html'
+
+    # dispatch 메소드는 요청자가 웹 사이트 서버에 GET방식으로 또는 POST방식으로 했는지 판단하는 기능을 갖는다.
+    # CreateView나 UpdateView의 경우 방문자가 서버에 GET방식으로 들어오면 포스트를 작성할 수 있는 폼 페이지를 보내준다.
+    # 반면 같은 경로로 POST 방식으로 들어오는 경우에는 폼의 유효성을 확인 후 문제가 없다면 데이터 베이스에 내용을 저장하도록 되어있다.
+    def dispatch(self, request, *args, **kwargs):
+        # request.user(방문자)
+        # self.get_object().author는 UpdateView의 기본 메소드로 Post.objects.get(pk=pk)와 동일한 역할을 한다.
+        # 가져온 Post 인스턴스의 author 필드가 방문자와 동일한 경우에만 dispatch()의 if참 값으로 간다.
+        if request.user.is_authenticated and request.user == self.get_object().author:
+            return super(PostUpdate, self).dispatch(request, *args, **kwargs)
+        else: 
+            raise PermissionDenied

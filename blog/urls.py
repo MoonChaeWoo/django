@@ -22,7 +22,8 @@ urlpatterns = [
     path('<int:pk>/', views.PostDetail.as_view()), #CBV방식
     path('category/<str:slug>/', views.category_page),
     path('tag/<str:slug>/', views.tag_page),
-    path('create_post/', views.PostCreate.as_view())
+    path('create_post/', views.PostCreate.as_view()),
+    path('update_post/<int:pk>/', views.PostUpdate.as_view())
     
     # path('', views.index), #FBV방식
     # path('<int:pk>/', views.single_popst_pages), #FBV방식
