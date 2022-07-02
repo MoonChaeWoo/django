@@ -23,6 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
     path('',include('single_pages.urls')),
+    # django-markdown은 urls.py에도 경로를 하나 추가해야 원할하게 작동한다.
+    #path('markdownx/', include('markdownx.urls')), 지원 종료됨; 
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

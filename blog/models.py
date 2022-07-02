@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from markdownx.models import MarkdownxField
 import os
 
 class Tag(models.Model):
@@ -35,7 +36,9 @@ class Category(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=30)
+    # 기존에 content = models.TextField()것을 마크다운으로 바꿔주워야한다. markdown을 적용 시에 한정.
     content = models.TextField()
+    #content = MarkdownxField()
 # 요약문을 나타내는 필드를 생성 글자수는 최대 100자 nullable
     hook_text = models.CharField(max_length=100, blank=True)
 
