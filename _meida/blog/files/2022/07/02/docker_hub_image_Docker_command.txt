@@ -1,0 +1,28 @@
+docker에 이미지가 있는지 확인하는 명령어
+- docker images
+
+docker hub에서 image 다운하는 명령어
+ - docker pull [컨테이너 이미지 이름]:latest
+ -> /var/lib/docker/overlay2에 컨테이너 이미지가 저장이 된다.
+ -> docker pull nginx:latest
+ -> /var/lib/docker/overlay2에 가면 5개가 다운이 되어있다
+ -> 즉 nginx 컨테이너가 5개의 레이어로 구성이 되어있다는걸 의미한다.
+ -> 아직 "컨테이너화" 되어 실행된건 아니다.
+
+도커 실행 명령어
+ - docker run -d --name web -p 80:80 nginx:latest  [호스트 포트]:[컨테이너 포트]
+					     *여기서 호스트랑 도커가 설치된 linux를 의미한다.
+   - 도커를 웹 이라는 이름으로 데몬(백그라운드)형식으로 80번 포트를 열어서 nginx를 실행한다.
+
+도커 중지 명령어
+ - docker stop web : 웹이라는 도커 컨테이너를 중지하는 명령어이다.
+
+도커 컨테이너 삭제 명령어
+ - docker rm [컨테이너 이름]
+ - 컨테이너가 지워진 것이지 이미지 파일이 지워진건 아니다.
+
+도커 컨테이너 이미지 삭제 명령어
+ - docker rmi [이미지 이름]
+
+도커 켄테이너 모두 보는 명령어
+ -  docker ps -al

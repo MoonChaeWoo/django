@@ -3,6 +3,7 @@ from .models import Post, Category, Tag
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.core.exceptions import PermissionDenied
+from django.utils.text import slugify
 
 # Create your views here.
 
@@ -102,28 +103,62 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     # author 필드를 자동으로 채우기 위해 CreateView에서 제공하는 form_valid()함수
     # CreateView는 form_valid()를 기본적으로 탑재
+
+    # super() 슈퍼클래스의 메소드를 호출한다. 
+    # super().form_valid(form)은 슈퍼클래스인 FormView의 메소드 form_valid 를 호출하겠다는 의미이다.
+
+    # form_valid(form) 
+    # form_valid() 함수는 유효한 폼 데이터로 처리할 로직 코딩 
+    # form_valid는 django.http.HttpResponse를 반환한다. 
+    # 유효한 폼데이터가 POST 요청되었을 때 form_valid 메소드가 호출된다. form_valid는 단순히 success_url로의 연결을 수행한다.
     def form_valid(self, form):
         current_user = self.request.user
         # self.request.user는 웹 사이트 방문자를 의미한다.
+
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
+            # is_authenticated는 웹사이트에 방문자가 로그인한 상태인지 아닌지 알 수 있다.
+            form.instance.author = current_user
+            # current_user = 현재 접속한 방문자를 담는다.
+
+            # 태그와 관련된 작업을 하기 전에 CreateView의 form_valid() 함수의 결과값을 respose라는 변수에 임시로 닫아둔다.
+            respose = super(PostCreate, self).form_valid(form)
+
+            # 장고가 자동으로 작성한 post_form.html의 폼을 보면 method="post"로 설정되어 있다.
+            # 이 폼 안에 name = 'tag_str'인 input을 추가했으니 방문자가 <submit> 버튼을 클릭했을 때 이 값 역시 POST 방식으로 
+            # PostCreate까지 전달되어 있는 상태이다.
+            # 이 값은 self.request.POST.get('tag_str')로 받을 수 있다.
+            # Post 방식으로 전달된 정보 중 name = 'tags_str'인 input의 값을 가져오라는 뜻이다.
+            tag_str = self.request.POST.get('tag_str')
+
+            if tag_str:
+                tag_str = tag_str.strip()
+
+                tag_str = tag_str.replace(',', ';')
+                tag_list = []
+                tag_list = tag_str.split(';')
+
+                for t in tag_list:
+                    t = t.strip()
+                    tag, is_tag_created = Tag.objects.get_or_create(name=t)
+                    if is_tag_created:
+                        tag.slug = slugify(t, allow_unicode=True)
+                        tag.save()
+                    self.object.tag.add(tag)
+
+            return respose
+        else:
+            # 방문자가 비로그인이라면 돌려보낸다. 
+            return redirect('/blog/')
 
     # UserPassesTestMixin(권한관련)를 추가한 후
     # test_func()함수를 추가해 이 페이지에 접근 가능한 사용자를 최고관리자 또는 스태프로 제한한다.
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.is_staff
 
-        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):
-            # is_authenticated는 웹사이트에 방문자가 로그인한 상태인지 아닌지 알 수 있다.
-            form.instance.author = current_user
-            # current_user = 현재 접속한 방문자를 담는다.
-            return super(PostCreate, self).form_valid(form)
-        else:
-            # 방문자가 비로그인이라면 돌려보낸다. 
-            return redirect('/blog/')
-
 class PostUpdate(LoginRequiredMixin, UpdateView):
     # UpdateView, CreateView를 상속받으면 _form.html을 사용하도록 기본 설정 되어있다.
     model = Post
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category', 'tags']
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category', 'tag']
 
     template_name = 'blog/post_update_form.html'
 
@@ -138,3 +173,46 @@ class PostUpdate(LoginRequiredMixin, UpdateView):
             return super(PostUpdate, self).dispatch(request, *args, **kwargs)
         else: 
             raise PermissionDenied
+
+    def get_context_data(self, **kwargs):
+        context = super(PostUpdate, self).get_context_data()
+
+        if self.object.tag.exists():
+            tag_str_list = []
+            for t in self.object.tag.all():
+                tag_str_list.append(t.name)
+            context['tag_str_default'] = '; '.join(tag_str_list)
+
+        return context
+
+    # form_valid(form) 
+    # form_valid() 함수는 유효한 폼 데이터로 처리할 로직 코딩 
+    # form_valid는 django.http.HttpResponse를 반환한다. 
+    # 유효한 폼데이터가 POST 요청되었을 때 form_valid 메소드가 호출된다. form_valid는 단순히 success_url로의 연결을 수행한다.
+    def form_valid(self, form):
+        response = super(PostUpdate, self).form_valid(form)
+        self.object.tag.clear()
+
+        # 장고가 자동으로 작성한 post_form.html의 폼을 보면 method="post"로 설정되어 있다.
+        # 이 폼 안에 name = 'tag_str'인 input을 추가했으니 방문자가 <submit> 버튼을 클릭했을 때 이 값 역시 POST 방식으로 
+        # PostCreate까지 전달되어 있는 상태이다.
+        # 이 값은 self.request.POST.get('tag_str')로 받을 수 있다.
+        # Post 방식으로 전달된 정보 중 name = 'tags_str'인 input의 값을 가져오라는 뜻이다.
+        tag_str = self.request.POST.get('tag_str')
+
+        if tag_str:
+            tag_str = tag_str.strip()
+
+            tag_str = tag_str.replace(',', ';')
+            tag_list = []
+            tag_list = tag_str.split(';')
+
+            for t in tag_list:
+                t = t.strip()
+                tag, is_tag_created = Tag.objects.get_or_create(name=t)
+                if is_tag_created:
+                    tag.slug = slugify(t, allow_unicode=True)
+                    tag.save()
+                self.object.tag.add(tag)
+
+        return response

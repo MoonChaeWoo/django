@@ -1,0 +1,18 @@
+cron
+- 주기적으로 반복되는 일을 자동적으로 실행될 수 있도록 설정
+- 관련 데몬(서비스)은 crond 관련 파일은 /etc/crontab
+- /etc/crontab 형식
+	분 시 일 월 요일 사용자 실행명령
+            00 00  1  *    *    root   cp -r /home/backup
+
+at
+- 일회성 작업을 예약
+ ex>  at [시간] -> at 2:00am tomorrow, at now +1hours
+ 을 명령어를 입력후 
+at> 프롬프트에 예약 명령어를 입력 후 [enter]
+완료되면 ctrl + d
+확인 at -l
+취소 atrm <작업번호>
+
+systemctl
+- systemctl status cron : 크론의 상태를 확인 하는 명령

@@ -1,0 +1,36 @@
+Docker Container Strorage 실습
+★★★ -v <host path>:<container mount path>의 경우★★★
+▶docker run -d --name db -v /dbdata:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
+ ▷ -e
+   → -e는 Set enviroment variables로 추정
+   → db관리자의 비밀번호를 명시해주어야 한다.
+   → 환경변수 비밀번호를 pass로 지정해주고 있다.
+
+ ▷ -v
+   → 사용자 디렉터리에 마운트를 하되 없다면 명시된 이름으로 디렉터리 생성
+   → dbdata와 /var/lib/mysql을 마운트로 영구적으로 데이터를 남게 만들어줌
+
+ ▷ CONTAINER:db[/# mysql --> mysqld(/var/lib/mysql/dbdata] 
+
+ ▷ 실행중인 컨테이너에 접속하기 명령
+   → docker exec -it [컨테이너 이름] /bin/bash
+	→ 컨테이너에 i(대화형)t(터미널)로 /bin/bash쉘로 접속할 것이다.
+	→ mysql -u root -ppass를 하여 mysql에 접속을 한다.
+	→ 그 후 show databases 명령어로 db확인
+	→ create databases testDB;
+	→ exit를 하면 접속 해제가 된다.
+	→ 한번 더 exit를 함으로써 컨테이너에서 빠져나오게 된다.
+
+★★★ -v <container mount path>의 경우★★★
+   → /var/lib/docker/volume/UUID/_data에 데이터를 남긴다.
+
+ ▶docker run -d --name db -v /var/lib/mysql -e MYSQL_ROOT_PASSWORD=pass mysql:latest
+  ▷ 위와 같이 진행 후 /var/lib/docker/volumes/UUID/_data안에 db파일이 존재하게 된다.
+
+ ▷ docker volume [command] [ls ,rm 등등]
+   → 볼륨과 관련된 커맨드 실행 
+   → rm [UUID]를 통하여 지울 수도 있다.
+
+ ▶ (DB </webdata/index.html>) → (web server</usr/share/nginx/html>) → PC
+  ▷ docker run -d -v /webserver:/var/share/nginx/html:ro -p 80:80 nginx:latest
+   → /webserver/index.html로부터 데이터를 웹 서버로 넘겨서 피시에 보여주게 되는 상황이다.
