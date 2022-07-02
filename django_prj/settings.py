@@ -43,6 +43,9 @@ INSTALLED_APPS = [
     # 그 후 for i in Post.objects.all():
     #    print(f'{i} :: category-{i.category}') 와 같이 파이썬 문법을 사용해서 조회를 하면 된다.
     'django_extensions',
+    # pip install django-crispy-forms를 설치한 후 crispy_forms를 추가해준다.
+    # settings.py의 아래 static과 media의 루트를 정해주는 곳에서 crispy_form 스타일을 bootstrap4로 바꿔준다.
+    'crispy_forms',
     'blog',
     'single_pages',
 ]
@@ -131,6 +134,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, '_static')
 # MEDIA_URL은 /media로 지정함. 웹 브라우저 도메인 뒤에 /media라는 경로가 따라오면 미디어 파일을 사용하겠다는 의미로 지정.
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '_meida')
+
+# pip install django-crispy-forms를 설치한 후 crispy_forms를 추가해준다.
+# crispy_form 스타일을 bootstrap4로 바꿔준다.
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
