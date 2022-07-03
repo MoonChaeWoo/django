@@ -87,3 +87,17 @@ class Post(models.Model):
 # null=True와 blank=True의 차이점 (null과 blank는 모두 디폴트 값이 false)
 # null=True 는 필드의 값이 NULL(정보 없음)로 저장되는 것을 허용한다. 결국 데이터베이스 열에 관한 설정이다.
 # blank=True 는 필드가 폼(입력 양식)에서 빈 채로 저장되는 것을 허용한다. 장고 관리자(admin) 및 직접 정의한 폼에도 반영된다.
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.author} :: {self.content}'
+
+    # def get_absolute_url(self):를 추가하면 관리자 페이지에서 VIEW ON SITE 버튼이 나와 버튼을 누르면 해당 게시물로 링크가 된다.
+    def get_absolute_url(self):
+        return f'{self.post.get_absolute_url()}#comment-{self.pk}'
