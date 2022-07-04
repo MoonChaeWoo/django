@@ -3,11 +3,7 @@
 {% block main_area %}
 <div class="container">
     <div class="row">
-    {% if user.is_authenticated %}
-        {% if user.is_staff or user.is_superuser %}
-            <a class="btn btn-info btn-sm float-right" href="/blog/create_post" role="button"><i class="fas fa-pen"></i>&nbsp&nbsp;New Post</a>
-        {% endif %}
-    {% endif %}
+    
     <h1>{% if category %} Blog <span class="badge badge-secondary">{{ category }}</span>{% endif %}
 {% if tag %}
 <span class="badge badge-light">
@@ -21,6 +17,11 @@
                 <p class="lead mb-0">Web page using Nginx Gunicorn Django</p>
             </div>
         </div>
+        {% if user.is_authenticated %}
+        {% if user.is_staff or user.is_superuser %}
+            <a class="btn btn-info btn-sm float-right" href="/blog/create_post" role="button"><i class="fas fa-pen"></i>&nbsp;&nbsp;New Post</a>
+        {% endif %}
+    {% endif %}
     </header>
     
     <!-- Page content-->

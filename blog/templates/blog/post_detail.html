@@ -1,4 +1,5 @@
 {% extends 'blog/base_html/base.html' %}
+{% load crispy_forms_tags %}
 {% block head_title%}Blog Post - Start Linux{% endblock %}
 {% block styele %}
 {% endblock %}
@@ -83,14 +84,26 @@
                         <div class="card my-4">
                             <h5 class="card-header">Leave a Comment:</h5>
                             <div class="card-body">
-                                <form>
+                                {% if user.is_authenticated %}
+                                <form id="comment-form" method="post" action="{{ post.get_absolute_url }}new_comment/">
+                                    {% csrf_token %}
                                     <div class="form-group">
-                                        <textarea class="form-control" rows="3"></textarea>
+                                        {{ comment_form | crispy }}
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
+                                {% else %}
+                                <a role="button" class="btn btn-outline-dark btn-block btn-sm" href="#" data-toggle="modal" data-target="#loginModal">Login and leave a comment</a>
+                                {% endif %}
                             </div>
-                        </div>              
+                        </div>
+                        <!-- _set에 대한 설명 -->
+                        <!-- 특정 포스팅 내용에서 저장된 모든 댓글을 불러오기 위해 Manager 를 사용하면 손 쉽게 query_set 을 리턴 할 수 있다 -->
+                        <!-- 어떤 모델(Post)에서 자신을 foreign key로 가지고 있는 모델(Comment)에 접근하기위해 Manager 사용한다고 이해하면 된다. -->
+                        <!-- Manager 명명법 : FOO_set (단, FOO 는 소문자 source model name)  -->
+                        <!-- Manager : QuerySet 반환 -->
+                        <!-- {{ post.comment_set.all.count }} 를 사용하게 되면 특정 게시물 댓글의 개수를 반환한다. -->
+                        <!-- {{ post.comment_set.all }} 는 말그대로 모든 댓글을 리턴하며 filter, order_by 를 사용하여 원하는 쿼리셋을 얻을 수 있다. --> 
                         {% if post.comment_set.exists %}
                             {% for comment in post.comment_set.iterator %}
                                 <!-- Single Comment -->
@@ -117,14 +130,3 @@
         </div> 
     </div>      
 {% endblock %}
-            
-            
-            
-            
-        <!-- _set에 대한 설명 -->
-                        <!-- 특정 포스팅 내용에서 저장된 모든 댓글을 불러오기 위해 Manager 를 사용하면 손 쉽게 query_set 을 리턴 할 수 있다 -->
-                        <!-- 어떤 모델(Post)에서 자신을 foreign key로 가지고 있는 모델(Comment)에 접근하기위해 Manager 사용한다고 이해하면 된다. -->
-                        <!-- Manager 명명법 : FOO_set (단, FOO 는 소문자 source model name)  -->
-                        <!-- Manager : QuerySet 반환 -->
-                        <!-- {{ post.comment_set.all.count }} 를 사용하게 되면 특정 게시물 댓글의 개수를 반환한다. -->
-                        <!-- {{ post.comment_set.all }} 는 말그대로 모든 댓글을 리턴하며 filter, order_by 를 사용하여 원하는 쿼리셋을 얻을 수 있다. -->
